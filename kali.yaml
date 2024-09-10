@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kali-linux-deployment
+  labels:
+    app: kali-linux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kali-linux
+  template:
+    metadata:
+      labels:
+        app: kali-linux
+    spec:
+      containers:
+      - name: kali-linux
+        image: kalilinux/kali-rolling:latest
+        command: ["/bin/bash", "-c", "sleep infinity"]
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kali-linux-service
+spec:
+  selector:
+    app: kali-linux
+  ports:
+    - protocol: TCP
+      port: 22
+      targetPort: 22
+  type: ClusterIP
+
